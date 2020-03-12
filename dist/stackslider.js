@@ -115,6 +115,3 @@ var OPSlider = /** @class */ (function () {
     };
     return OPSlider;
 }());
-var container = document.getElementById('op-container');
-var opSlider = new OPSlider(container, 1000);
-//# sourceMappingURL=stackslider.js.map
