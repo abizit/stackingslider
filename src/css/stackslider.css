@@ -1,0 +1,84 @@
+.op-nav div {
+    height: 100%;
+    width: 5%;
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+    cursor: pointer;
+}
+
+.op-nav div.op-nav-right {
+    right: 0;
+}
+
+.op-outer {
+    overflow-x: hidden;
+    position: relative;
+    width: 100%;
+    min-height: 100%;
+}
+
+.op-outer .op-wrapper .slide-item {
+    position: absolute;
+    width: 96%;
+    top: 0;
+    left: 96%;
+    height: 100%;
+    z-index: 1;
+    padding: 0;
+    visibility: hidden;
+    -moz-transition: visibility calc(var(--transitiontime) * 1.5) ease;
+    -webkit-transition: visibility calc(var(--transitiontime) * 1.5) ease;
+    -o-transition: visibility calc(var(--transitiontime) * 1.5) ease;
+    transition: visibility calc(var(--transitiontime) * 1.5) ease;
+}
+
+
+.op-outer .op-wrapper .active-item,
+.op-outer .op-wrapper .prev-item,
+.op-outer .op-wrapper .next-item {
+    -moz-transition: left var(--transitiontime) ease, visibility calc(var(--transitiontime) * 1.5) ease;
+    -webkit-transition: left var(--transitiontime) ease, visibility calc(var(--transitiontime) * 1.5) ease;
+    -o-transition: left var(--transitiontime) ease, visibility calc(var(--transitiontime) * 1.5) ease;
+    transition: left var(--transitiontime) ease, visibility calc(var(--transitiontime) * 1.5) ease;
+}
+
+.op-outer .op-wrapper .next-item {
+    visibility: visible;
+    z-index: 2;
+}
+
+.op-outer .op-wrapper .prev-item {
+    left: 0;
+}
+
+.op-outer .op-wrapper .active-item {
+    z-index: 3;
+    left: 0;
+    visibility: visible;
+}
+
+.moving-right {
+    z-index: 4 !important;
+}
+
+
+.op-outer .op-wrapper .next-item {
+    left: 96%;
+}
+
+.op-outer .op-wrapper #slide-1 {
+    background: green;
+}
+
+.op-outer .op-wrapper #slide-2, .op-outer .op-wrapper #slide-5 {
+    background: blue;
+}
+
+.op-outer .op-wrapper #slide-3, .op-outer .op-wrapper #slide-6 {
+    background: red;
+}
+
+.op-outer .op-wrapper #slide-4 {
+    background: yellow;
+}

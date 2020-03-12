@@ -117,4 +117,4 @@ var OPSlider = /** @class */ (function () {
 }());
 var container = document.getElementById('op-container');
 var opSlider = new OPSlider(container, 1000);
-//# sourceMappingURL=functions.js.map
+//# sourceMappingURL=stackslider.js.map
