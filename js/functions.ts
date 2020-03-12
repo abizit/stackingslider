@@ -5,6 +5,13 @@ class OPSlider {
     private sections: HTMLElement[];
     readonly sectionsCount: number;
     private current: number;
+    transitions = {
+        "transition": "transitionend",
+        "OTransition": "oTransitionEnd",
+        "MozTransition": "transitionend",
+        "WebkitTransition": "webkitTransitionEnd"
+    };
+    sectionTransition: string;
 
     constructor(public selector: HTMLElement, public transitionTime: number) {
         this.wrapper = this.selector.querySelector('.op-wrapper');
@@ -21,8 +28,11 @@ class OPSlider {
             console.log('Need minimum two slides');
             return
         }
-        //set transition to :root to be used by CSS
+        // set transition time to :root to be used by CSS
         document.documentElement.style.setProperty('--transitiontime', `${this.transitionTime.toString()}ms`);
+
+        // find which transitionEnd is being used by the browser
+        this.sectionTransition = this._transitionFinder();
 
         //Setup initial Classes to the slider
         this.selector.classList.add('op-outer');
@@ -69,10 +79,18 @@ class OPSlider {
         }
 
         this._transitionSlide(nextSection, direction, prev, next);
+        // Add TransitionEnd eventlistener to the active slide
+        this.sections[this.current].addEventListener(this.sectionTransition, () => this._triggertransitionEnd(), false)
+    }
+
+    private _triggertransitionEnd() {
+        this.isSliding = false;
     }
 
     // Trigger Transition Event
     private _transitionSlide(nextSection: number, direction: string, prev: number, next: number) {
+        // Remove the eventlistener from the previous active slider
+        this.sections[nextSection].removeEventListener(this.sectionTransition, () => this._triggertransitionEnd(), false);
         this.sections.forEach((el) => {
             el.className = 'slide-item';
         });
@@ -89,15 +107,11 @@ class OPSlider {
             this.sections[nextSection].classList.add('prev-item');
             this.current = this.current > 0 ? this.current - 1 : this.sectionsCount - 1;
         }
-
-        setTimeout(() => {
-            this.isSliding = false;
-        }, this.transitionTime)
-
     }
 
 
     // Clone Items for circular effect
+    // if the slides are less than or equal to 2 clone 3 times so as to have atleast 6 slides
     private _itemsClone(items) {
         for (let itemsCount = items.length <= 2 ? 3 : items.length; itemsCount <= items.length; itemsCount++) {
             for (let itemsKey in items) {
@@ -108,6 +122,17 @@ class OPSlider {
             }
         }
 
+    }
+
+    // Find which transition is being used by the browser
+    private _transitionFinder(): string {
+        for (let transition in this.transitions) {
+            if (this.transitions.hasOwnProperty(transition)) {
+                if (this.sections[this.current].style[transition] !== undefined) {
+                    return this.transitions[transition]
+                }
+            }
+        }
     }
 
 

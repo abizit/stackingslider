@@ -3,6 +3,12 @@ var OPSlider = /** @class */ (function () {
         this.selector = selector;
         this.transitionTime = transitionTime;
         this.isSliding = false;
+        this.transitions = {
+            "transition": "transitionend",
+            "OTransition": "oTransitionEnd",
+            "MozTransition": "transitionend",
+            "WebkitTransition": "webkitTransitionEnd"
+        };
         this.wrapper = this.selector.querySelector('.op-wrapper');
         var items = this.wrapper.querySelectorAll('.slide-item');
         this._itemsClone(items);
@@ -17,8 +23,10 @@ var OPSlider = /** @class */ (function () {
             console.log('Need minimum two slides');
             return;
         }
-        //set transition to :root to be used by CSS
+        // set transition time to :root to be used by CSS
         document.documentElement.style.setProperty('--transitiontime', this.transitionTime.toString() + "ms");
+        // find which transitionEnd is being used by the browser
+        this.sectionTransition = this._transitionFinder();
         //Setup initial Classes to the slider
         this.selector.classList.add('op-outer');
         this.sections[this.current].classList.add('active-item');
@@ -40,6 +48,7 @@ var OPSlider = /** @class */ (function () {
         });
     };
     OPSlider.prototype._navigate = function (direction) {
+        var _this = this;
         // check if transition is still happening
         if (this.isSliding) {
             return;
@@ -55,10 +64,17 @@ var OPSlider = /** @class */ (function () {
             nextSection = prev > 0 ? prev - 1 : this.sectionsCount - 1;
         }
         this._transitionSlide(nextSection, direction, prev, next);
+        // Add TransitionEnd eventlistener to the active slide
+        this.sections[this.current].addEventListener(this.sectionTransition, function () { return _this._triggertransitionEnd(); }, false);
+    };
+    OPSlider.prototype._triggertransitionEnd = function () {
+        this.isSliding = false;
     };
     // Trigger Transition Event
     OPSlider.prototype._transitionSlide = function (nextSection, direction, prev, next) {
         var _this = this;
+        // Remove the eventlistener from the previous active slider
+        this.sections[nextSection].removeEventListener(this.sectionTransition, function () { return _this._triggertransitionEnd(); }, false);
         this.sections.forEach(function (el) {
             el.className = 'slide-item';
         });
@@ -74,17 +90,25 @@ var OPSlider = /** @class */ (function () {
             this.sections[nextSection].classList.add('prev-item');
             this.current = this.current > 0 ? this.current - 1 : this.sectionsCount - 1;
         }
-        setTimeout(function () {
-            _this.isSliding = false;
-        }, this.transitionTime);
     };
     // Clone Items for circular effect
+    // if the slides are less than or equal to 2 clone 3 times so as to have atleast 6 slides
     OPSlider.prototype._itemsClone = function (items) {
         for (var itemsCount = items.length <= 2 ? 3 : items.length; itemsCount <= items.length; itemsCount++) {
             for (var itemsKey in items) {
                 if (items.hasOwnProperty(itemsKey)) {
                     var clone = items[itemsKey].cloneNode(true);
                     this.wrapper.appendChild(clone);
+                }
+            }
+        }
+    };
+    // Find which transition is being used by the browser
+    OPSlider.prototype._transitionFinder = function () {
+        for (var transition in this.transitions) {
+            if (this.transitions.hasOwnProperty(transition)) {
+                if (this.sections[this.current].style[transition] !== undefined) {
+                    return this.transitions[transition];
                 }
             }
         }
