@@ -1,4 +1,3 @@
-/// <reference path="../node_modules/@types/jquery/index.d.ts" />
 var OPSlider = /** @class */ (function () {
     function OPSlider(selector, transitionTime) {
         this.selector = selector;
