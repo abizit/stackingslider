@@ -82,6 +82,10 @@ new OPSlider(container, 1000);
 - Edge (latest)
 - Internet Explorer 9+
 
+## Contribute
+
+[Contribute](https://github.com/abizit/stackingslider/blob/master/CONTRIBUTING.md)
+
 ## License
 
-[MIT](https://opensource.org/licenses/MIT) © [Studio Matrix](https://studiomatrix.com.np/)
+[MIT](https://github.com/abizit/stackingslider/blob/master/LICENSE) © [Studio Matrix](https://studiomatrix.com.np/)
