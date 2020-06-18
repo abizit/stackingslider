@@ -1,9 +1,5 @@
 class OPSlider {
     isSliding: boolean = false;
-    readonly wrapper: Element;
-    private sections: HTMLElement[];
-    readonly sectionsCount: number;
-    private current: number;
     transitions = {
         "transition": "transitionend",
         "OTransition": "oTransitionEnd",
@@ -11,6 +7,12 @@ class OPSlider {
         "WebkitTransition": "webkitTransitionEnd"
     };
     sectionTransition: string;
+    private events = {};
+    readonly wrapper: Element;
+    private sections: HTMLElement[];
+    readonly sectionsCount: number;
+    private current: number;
+
 
     constructor(public selector: HTMLElement, public transitionTime: number) {
         this.wrapper = this.selector.querySelector('.op-wrapper');
@@ -20,6 +22,7 @@ class OPSlider {
         this.sectionsCount = this.sections.length;
         this.current = 0;
         this.init();
+        this.selector.dispatchEvent(this.events["sliderReady"]);
     }
 
     init() {
@@ -53,12 +56,14 @@ class OPSlider {
         this.selector.insertBefore(nav, this.wrapper);
 
         navLeft.addEventListener('click', () => {
-            this._navigate('prev')
+            this._navigate('prev');
+            this.selector.dispatchEvent(this.events['prev']);
         });
         navRight.addEventListener('click', () => {
-            this._navigate('next')
+            this._navigate('next');
+            this.selector.dispatchEvent(this.events['next']);
         });
-
+        this._sliderEvents();
     }
 
     private _navigate(direction: string) {
@@ -80,10 +85,12 @@ class OPSlider {
         this._transitionSlide(nextSection, direction, prev, next);
         // Add TransitionEnd eventlistener to the active slide
         this.sections[this.current].addEventListener(this.sectionTransition, () => this._triggertransitionEnd(), false)
+        this.selector.dispatchEvent(this.events['slideTransitionStart']);
     }
 
     private _triggertransitionEnd() {
         this.isSliding = false;
+        this.selector.dispatchEvent(this.events['slideTransitionEnd']);
     }
 
     // Trigger Transition Event
@@ -134,9 +141,15 @@ class OPSlider {
         }
     }
 
-
+    // Slider Events
+    private _sliderEvents() {
+        this.events = {
+            'slideTransitionStart': new Event('stk.slide.transition.start'),
+            'slideTransitionEnd': new Event('stk.slide.transition.end'),
+            'sliderReady': new Event('stk.slider.ready'),
+            'next': new Event('stk.slide.dir.next'),
+            'prev': new Event('stk.slide.dir.prev')
+        };
+    }
 }
-
-const container = document.getElementById('op-container');
-const opSlider = new OPSlider(container, 1000);
 

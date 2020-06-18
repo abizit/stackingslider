@@ -9,6 +9,11 @@ var OPSlider = /** @class */ (function () {
             "MozTransition": "transitionend",
             "WebkitTransition": "webkitTransitionEnd"
         };
+        this.events = {
+            'slideTransitionStart': new Event('slideTransitionStart'),
+            'slideTransitionEnd': new Event('slideTransitionEnd'),
+            'sliderReady': new Event('sliderReady')
+        };
         this.wrapper = this.selector.querySelector('.op-wrapper');
         var items = this.wrapper.querySelectorAll('.slide-item');
         this._itemsClone(items);
@@ -46,6 +51,7 @@ var OPSlider = /** @class */ (function () {
         navRight.addEventListener('click', function () {
             _this._navigate('next');
         });
+        this.selector.dispatchEvent(this.events["sliderReady"]);
     };
     OPSlider.prototype._navigate = function (direction) {
         var _this = this;
@@ -69,6 +75,7 @@ var OPSlider = /** @class */ (function () {
     };
     OPSlider.prototype._triggertransitionEnd = function () {
         this.isSliding = false;
+        this.selector.dispatchEvent(this.events['slideTransitionEnd']);
     };
     // Trigger Transition Event
     OPSlider.prototype._transitionSlide = function (nextSection, direction, prev, next) {
@@ -113,8 +120,9 @@ var OPSlider = /** @class */ (function () {
             }
         }
     };
+    // Slider Events
+    OPSlider.prototype._sliderEvents = function () {
+        this;
+    };
     return OPSlider;
 }());
-var container = document.getElementById('op-container');
-var opSlider = new OPSlider(container, 1000);
-//# sourceMappingURL=stackslider.js.map

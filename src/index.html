@@ -63,10 +63,16 @@
     </div>
 </section>
 </body>
-<script src="stackslider.js"></script>
+<script src="../dist/stackslider.js"></script>
 <script>
-    var container = document.getElementById('op-container');
-    var opSlider = new OPSlider(container, 1000);
-    //# sourceMappingURL=stackslider.js.map
+    let container = document.getElementById('op-container');
+    new OPSlider(container, 1000);
+    container.addEventListener('stk.slide.dir.next', function (e) {
+        console.log(e)
+    })
+    container.addEventListener('stk.slide.dir.prev', function (e) {
+        console.log(e)
+    })
+
 </script>
 </html>
